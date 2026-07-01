@@ -1,0 +1,13 @@
+# Python environment
+venv/
+__pycache__/
+
+# Data and Logs
+*.csv
+*.xlsx
+*.txt
+*.json
+
+# Sensitive files
+storage_state.json
+.env
