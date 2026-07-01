@@ -9,9 +9,10 @@ A robust, error-tolerant web scraping pipeline built with Python and Playwright.
 - **Industry Intelligence:** Extracts company metadata including Ticker, Country, Sector, and Industry for deeper financial analysis.
 
 ## Usage
-1. Prepare your `urls_50.txt` file in the root directory.
-2. Ensure you have the required dependencies installed.
-3. Run the script: `python step5.py`
+
+1. Prepare your input file containing the target URLs (e.g., `urls.txt`) and place it in the root directory. Ensure the `URLS_FILE` variable in the script points to this file.
+2. Ensure you have the required dependencies installed (e.g., `pip install playwright` and `playwright install`).
+3. Run the script: `python financial_scraper.py`
 
 ## Professional Disclaimer
 This repository is for educational and research purposes only. Please ensure your scraping activities comply with the target website's Terms of Service.
