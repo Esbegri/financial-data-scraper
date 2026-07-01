@@ -321,8 +321,8 @@ def extract_header_info(page) -> dict:
 
 def pick_best_table_on_page(page):
     """
-    Aynı tab içinde birden fazla tablo olabiliyor.
-    Geniş (>=10 kolon) ve en uzun (max row) tabloyu seçiyoruz.
+    Multiple tables can be located within the same tab.
+    We choose the widest (>=10 columns) and longest (max rows) table.
     """
     all_tables = page.locator("table")
     target_table = None
@@ -358,7 +358,7 @@ def pick_best_table_on_page(page):
 # =========================
 def is_junk_header_row(cells: list[str]) -> bool:
     """
-    Finbox tablosunda veri olmayan üst başlıkları ayıkla:
+    Extract headers with no data from the Finbox table:
     - "INR Fiscal Year Ending Latest"
     - "FY - 9 FY - 8 ..."
     - "Statement of Cashflows"
@@ -393,8 +393,8 @@ def is_junk_header_row(cells: list[str]) -> bool:
 
 def detect_year_header_row(rows_cells: list[list[str]]) -> tuple[int, list[str]] | tuple[None, None]:
     """
-    "(in millions) Mar-16 ... Mar-25 ... LTM" satırını bul.
-    Bulursak years = cells[1:].
+    "(in millions) Mar-16 ... Mar-25 ... LTM" find the line.
+    if find years = cells[1:].
     """
     for idx, cells in enumerate(rows_cells):
         if not cells:
@@ -403,7 +403,7 @@ def detect_year_header_row(rows_cells: list[list[str]]) -> tuple[int, list[str]]
         if first.startswith("(in") or first == "in millions" or "(in millions)" in first:
             # years are remaining cells
             years = [c.strip().replace("\xa0", " ") for c in cells[1:] if c.strip() != ""]
-            if len(years) >= 8:  # en az bir kaç yıl olsun
+            if len(years) >= 8:  # at least a few years
                 return idx, years
     return None, None
 
@@ -415,7 +415,7 @@ def read_table_rows_clean(target_table, url: str, header_info: dict) -> tuple[li
     for i in range(rows_loc.count()):
         row = rows_loc.nth(i)
         cells = [c.strip().replace("\xa0", " ") for c in row.locator("td, th").all_inner_texts()]
-        cells = [c for c in cells if c != ""]  # boşları at
+        cells = [c for c in cells if c != ""]  # throw away the empty ones
         if len(cells) < 2:
             continue
         raw_rows.append(cells)
@@ -493,7 +493,7 @@ def scrape_one(page, url: str):
 
         target = pick_best_table_on_page(page)
         if not target:
-            raise RuntimeError(f"{tab_label} için uygun tablo bulunamadı.")
+            raise RuntimeError(f"{tab_label} no suitable table was found.")
 
         h, rows = read_table_rows_clean(target, url, header_info)
         final_data[key] = (h, rows)
